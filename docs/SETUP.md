@@ -40,8 +40,8 @@ select id, email, 'admin' from auth.users where email = 'organizer@company.com';
 Scheduled notifications are rows in Postgres (`scheduled_for`, UTC). Something must call `GET /api/cron/dispatch` with `Authorization: Bearer $CRON_SECRET` regularly. The endpoint claims due jobs atomically, so extra/concurrent calls are harmless.
 
 Options:
-- **Vercel Cron** (`vercel.json`, per minute). *Verified from Vercel docs (2026-11-20): Pro supports once-per-minute. Hobby limits are inconsistent across Vercel's own pages* ([Cron usage & pricing](https://vercel.com/docs/cron-jobs/usage-and-pricing): once/day with ±1h precision; [Schedules limits](https://vercel.com/docs/schedules/limits): 15 min). **On Hobby the `* * * * *` schedule can fail the deployment**, so change it or use the option below. Vercel sends `CRON_SECRET` as the bearer automatically.
-- **Supabase pg_cron + pg_net** (any Vercel plan, per minute): `supabase/cron-pg_cron.sql`. Replace domain and secret, run once. If you use this, delete `vercel.json`'s `crons`.
+- **Vercel Cron** (Pro only; **not enabled by default**). To use it, add `"crons": [{ "path": "/api/cron/dispatch", "schedule": "* * * * *" }]` to `vercel.json`. *Verified from Vercel docs (2026-11-20): Pro supports once-per-minute. Hobby limits are inconsistent across Vercel's own pages* ([Cron usage & pricing](https://vercel.com/docs/cron-jobs/usage-and-pricing): once/day with ±1h precision; [Schedules limits](https://vercel.com/docs/schedules/limits): 15 min). **On Hobby a per-minute schedule fails the build** (confirmed: "Hobby accounts are limited to daily cron jobs"), so `vercel.json` ships without crons. Use the pg_cron option below on Hobby. Vercel sends `CRON_SECRET` as the bearer automatically.
+- **Supabase pg_cron + pg_net** (any Vercel plan, per minute): `supabase/cron-pg_cron.sql`. Replace domain and secret, run once. Recommended for Hobby; no `vercel.json` change needed.
 - Any external pinger (GitHub Actions cron has 5-min granularity).
 
 Delivery is "at or shortly after" the scheduled time (tick granularity + push latency) and **never before**. No exact-second guarantee is made.
