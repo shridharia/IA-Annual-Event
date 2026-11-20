@@ -31,3 +31,7 @@ No Supabase project, VAPID keys, or physical devices were available, so the foll
 - "Accepted" = accepted by the push service, not displayed. "Opens" are best-effort pings from the service worker.
 - Dispatch runs inside one function invocation (45 s budget, 20 concurrent sends); very large audiences (many thousands) should move to a queue.
 - Hobby-plan Vercel cron frequency: see SETUP §6.
+
+## Notification test tools (added later)
+Verified in Chrome (v1 to v4): panel hidden without `?test=1`; test 1 produced a real service-worker notification on all four; button 2 stays hidden and shows no error while the server is off; `GET /api/push/test` reports `enabled:false`, `POST` returns 404 while disabled.
+**Not verified (needs Supabase, VAPID keys, scheduler and a real phone):** that test 2 arrives with the app closed on Android and iPhone.

@@ -12,7 +12,7 @@ export async function GET(req: Request) {
       return (await q).count ?? 0;
     };
     const [active, expired, unsub, sentN, pendingN, failedN, partialN, accepted, delFailed, delTotal, opens] = await Promise.all([
-      count("push_subscriptions", (q) => q.eq("status", "active")),
+      count("push_subscriptions", (q) => q.eq("status", "active").eq("test_only", false)),
       count("push_subscriptions", (q) => q.eq("status", "expired")),
       count("push_subscriptions", (q) => q.eq("status", "unsubscribed")),
       count("notifications", (q) => q.eq("status", "sent")),

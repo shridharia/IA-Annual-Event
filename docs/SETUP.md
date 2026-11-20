@@ -69,3 +69,11 @@ Only `content/event.ts`. `null`/`[]` = unconfirmed → hidden in production, sho
 - [ ] Schedule for +3 min with the dashboard **closed** → arrives after the time, never before
 - [ ] Cancel a pending job → never sends; Unsubscribe on device → status `unsubscribed`
 - [ ] `SUPABASE_SERVICE_ROLE_KEY` / `VAPID_PRIVATE_KEY` absent from the browser bundle (`grep` the `.next/static` output)
+
+## 10. Notification test tools (testing only)
+Open any version with `?test=1`, for example `/v3?test=1`, to get a **Test notifications** button (hidden for everyone else; `?test=0` hides it again).
+1. **Show a test notification now**: a real OS notification created on the device. Needs no server. Shows exactly how a notification looks.
+2. **Send a test in 5 minutes**: appears only once the server is ready. It schedules a real push to that one device through the normal pipeline, so it arrives with the app closed.
+
+To enable button 2: run `supabase/migrations/0002_test_notifications.sql`, set `ENABLE_TEST_TOOLS=1` in Vercel (plus the VAPID keys and a working per-minute scheduler, §6), and redeploy. Expect arrival 5 to 6 minutes after tapping (scheduler tick). iPhone needs the Home Screen app. Test devices are flagged `test_only` and never receive real broadcasts or count as subscribers.
+**Before the event: set `ENABLE_TEST_TOOLS=0` (or delete it).** The endpoint then returns 404 and the button disappears.

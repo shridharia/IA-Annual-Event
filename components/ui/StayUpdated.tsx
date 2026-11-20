@@ -73,6 +73,7 @@ export default function StayUpdated() {
     await refresh(); setBusy(false);
   };
 
+  const pushConfigured = !!process.env.NEXT_PUBLIC_VAPID_PUBLIC_KEY; // not set until the notification server is connected
   const installed = !!platform?.standalone;
   const how = platform ? installSteps(platform) : null;
 
@@ -122,7 +123,10 @@ export default function StayUpdated() {
               {push.kind === "blocked" && (
                 <p className="rounded-xl border border-flare/50 p-5">Notifications are <b>blocked</b> for this site. To enable them, allow notifications in your browser or system site settings, then reload this page.</p>
               )}
-              {push.kind === "off" && (
+              {push.kind === "off" && !pushConfigured && (
+                <p className="rounded-xl border border-white/15 p-5">Event notifications will be switched on closer to the day. Add the page to your Home Screen now so you&apos;re ready.</p>
+              )}
+              {push.kind === "off" && pushConfigured && (
                 <div className="grid gap-3">
                   <p className="text-sm text-dim">Status: <b className="text-bone">Off</b>. Your browser will ask for permission when you tap the button.</p>
                   <button className="btn btn-primary justify-self-start" onClick={onEnable} disabled={busy}><BellRing size={18} aria-hidden /> {busy ? "Enabling…" : "Enable notifications"}</button>

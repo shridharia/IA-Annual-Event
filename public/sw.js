@@ -1,5 +1,5 @@
-/* Impact 11 Years — service worker. Build: ecdd57e-mwom8vt7 (replaced by scripts/build-sw.mjs; a changed file = an update). */
-const VERSION = "ecdd57e-mwom8vt7";
+/* Impact 11 Years — service worker. Build: 38c91d3-mwoo8jrg (replaced by scripts/build-sw.mjs; a changed file = an update). */
+const VERSION = "38c91d3-mwoo8jrg";
 const SHELL = `impact11-shell-${VERSION}`;
 const RUNTIME = `impact11-runtime-${VERSION}`;
 const PRECACHE = ["/", "/offline", "/manifest.webmanifest", "/icons/icon-192.png", "/icons/badge-96.png"];

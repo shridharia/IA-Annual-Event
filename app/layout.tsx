@@ -45,6 +45,8 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         {children}
         <MotionRoot />
         <PwaRoot />
+        {/* Testing only: shows a notification test panel when the URL has ?test=1 */}
+        <script src="/test-tools.js" defer />
       </body>
     </html>
   );

@@ -11,6 +11,25 @@ export function isSafeDeepLink(v: string): boolean {
   return /^\/(?![/\\])[^\s]*$/.test(v) && v.length <= 500;
 }
 
+/**
+ * Push endpoints must belong to a real push service. The server POSTs to whatever endpoint is stored, so accepting
+ * arbitrary https URLs would let anyone make our server call internal or third-party addresses (SSRF).
+ */
+const PUSH_HOSTS = [
+  /^fcm\.googleapis\.com$/, /^android\.googleapis\.com$/,
+  /^([a-z0-9-]+\.)*push\.services\.mozilla\.com$/,
+  /^([a-z0-9-]+\.)*push\.apple\.com$/,
+  /^([a-z0-9-]+\.)*notify\.windows\.com$/,
+];
+export function isPushServiceEndpoint(v: string): boolean {
+  try {
+    const u = new URL(v);
+    return u.protocol === "https:" && PUSH_HOSTS.some((r) => r.test(u.hostname));
+  } catch {
+    return false;
+  }
+}
+
 export function isHttpsUrl(v: string): boolean {
   try {
     const u = new URL(v);
@@ -43,7 +62,7 @@ export const notificationEdit = notificationInput.omit({ mode: true, idempotency
 });
 
 export const subscriptionInput = z.object({
-  endpoint: z.string().url().max(2000).refine((v) => v.startsWith("https://"), "endpoint must be https"),
+  endpoint: z.string().url().max(2000).refine(isPushServiceEndpoint, "endpoint must be a known push service"),
   keys: z.object({ p256dh: z.string().min(20).max(200), auth: z.string().min(8).max(100) }),
   categories: z.array(z.enum(CATEGORIES)).max(6).optional(),
 });

@@ -5,7 +5,7 @@ import { isRetryable, resolveStatus } from "./backoff";
 
 export type NotificationRow = {
   id: string; title: string; body: string; url: string | null; image_url: string | null;
-  category: string; claim_token: string; attempt_count: number;
+  category: string; claim_token: string; attempt_count: number; target_subscription_id?: string | null;
 };
 
 const CONCURRENCY = 20;
@@ -22,7 +22,12 @@ export async function dispatchNotification(n: NotificationRow) {
   const started = Date.now();
 
   let q = db.from("push_subscriptions").select("id,endpoint,p256dh,auth").eq("status", "active");
-  if (n.category !== "urgent") q = q.contains("categories", [n.category]); // urgent reaches everyone
+  if (n.target_subscription_id) {
+    q = q.eq("id", n.target_subscription_id); // testing-only: a single device
+  } else {
+    q = q.eq("test_only", false); // test devices never receive real broadcasts
+    if (n.category !== "urgent") q = q.contains("categories", [n.category]); // urgent reaches everyone
+  }
   const { data: subs, error } = await q;
   if (error) return finish(n, { status: "pending", retryInMs: 60_000, error: error.message, refund: false });
 
