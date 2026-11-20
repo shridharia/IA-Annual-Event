@@ -11,6 +11,15 @@ const security = [
 const nextConfig: NextConfig = {
   poweredByHeader: false,
   turbopack: { root: __dirname },
+  // Short links to the design variations: v1 = Next.js "Doorway" app, v2-v4 = static design prototypes in /public.
+  async rewrites() {
+    return [
+      { source: "/v1", destination: "/" },
+      { source: "/v2", destination: "/prototype.html" },
+      { source: "/v3", destination: "/variations/aurora.html" },
+      { source: "/v4", destination: "/variations/poster.html" },
+    ];
+  },
   async headers() {
     return [
       { source: "/:path*", headers: security },
@@ -22,6 +31,11 @@ const nextConfig: NextConfig = {
           { key: "Service-Worker-Allowed", value: "/" },
         ],
       },
+      // Design previews shouldn't be indexed by search engines.
+      ...["/v2", "/v3", "/v4", "/prototype.html", "/variations/:path*"].map((source) => ({
+        source,
+        headers: [{ key: "X-Robots-Tag", value: "noindex, nofollow" }],
+      })),
       { source: "/organizer/:path*", headers: [{ key: "Cache-Control", value: "no-store" }] },
       { source: "/api/:path*", headers: [{ key: "Cache-Control", value: "no-store" }] },
     ];
