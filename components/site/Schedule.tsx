@@ -1,5 +1,5 @@
 import { MapPin, User } from "lucide-react";
-import { event } from "@/content/event";
+import { event, SHOW_SAMPLE } from "@/content/event";
 import { formatClock } from "@/lib/time";
 import Chapter from "@/components/ui/Chapter";
 
@@ -9,8 +9,9 @@ export default function Schedule() {
     <section id="schedule" className="section" aria-labelledby="schedule-h">
       <div className="wrap">
         <Chapter n="03" label="Schedule" />
-        <h2 id="schedule-h" className="display mb-12" style={{ fontSize: "var(--fs-display)" }} data-reveal="mask" data-split="lines">The evening, hour by hour</h2>
+        <h2 id="schedule-h" className="display mb-12" style={{ fontSize: "var(--fs-display)" }} data-reveal="mask" data-split="lines">The day, hour by hour</h2>
 
+        {SHOW_SAMPLE && <p className="placeholder-note mb-8">Sample content: not the real agenda</p>}
         {items.length === 0 ? (
           <div className="measure border-y border-white/15 py-10" data-reveal="up">
             <p className="lead">The agenda is being finalised.</p>

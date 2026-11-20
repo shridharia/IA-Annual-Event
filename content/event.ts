@@ -1,10 +1,11 @@
 import type { EventContent } from "./types";
+import { sample } from "./sample";
 
 /**
  * SINGLE SOURCE OF TRUTH for event content. Edit this file only; no animation code needs to change.
  * Nothing unconfirmed has been invented: `null` / empty arrays are deliberate placeholders.
  */
-export const event: EventContent = {
+const base: EventContent = {
   title: "11 Years of Impact",
   shortTitle: "Impact 11",
   organization: "Impact Analytics",
@@ -54,3 +55,7 @@ export const event: EventContent = {
 
   announcementLinks: [],
 };
+
+/** Preview switch: set NEXT_PUBLIC_SHOW_SAMPLE_CONTENT=1 to render the clearly-labelled demo agenda. Never on by default. */
+export const SHOW_SAMPLE = process.env.NEXT_PUBLIC_SHOW_SAMPLE_CONTENT === "1";
+export const event: EventContent = SHOW_SAMPLE ? { ...base, ...sample } : base;

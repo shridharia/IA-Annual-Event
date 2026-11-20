@@ -35,7 +35,7 @@ export const viewport: Viewport = {
 
 export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
-    <html lang="en" className={`${anton.variable} ${instrument.variable} ${manrope.variable}`}>
+    <html lang="en" suppressHydrationWarning className={`${anton.variable} ${instrument.variable} ${manrope.variable}`}>
       <head>
         {/* Marks JS availability so animated initial states never hide content for no-JS visitors. */}
         <script dangerouslySetInnerHTML={{ __html: "document.documentElement.classList.add('js');setTimeout(function(){if(!document.documentElement.classList.contains('motion-ready'))document.documentElement.classList.add('motion-failed')},3500)" }} />
